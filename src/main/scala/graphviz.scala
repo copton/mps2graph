@@ -2,7 +2,7 @@ package backend
 package graphviz
 
 object Printer {
-  def print(nodes: List[ast.Node]): String = {
+  def print(nodes: Seq[ast.Node]): String = {
     return "todo"
   }
 }
