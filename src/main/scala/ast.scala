@@ -1,19 +1,18 @@
 package ast;
 
-trait Node
-{
-  val name: String
-  val children: List[Child] = Nil
-  val references: List[Reference] = Nil
+case class Property(val name:String, val typ: String)
+case class Association(val target:String, val cardinality: String)
+
+object NodeType extends Enumeration {
+  val Concept = Value
+  val InterfaceConcept = Value
 }
 
-trait Target {
-  val name: String
-  val reference: Option[Node] = None
-}
-
-case class Reference(val name: String) extends Target
-case class Child(val name: String) extends Target
-
-case class InterfaceConcept(val name: String) extends Node
-case class Concept(val name: String) extends Node
+case class Node(
+  val typ: NodeType.Value,
+  val name: String,
+  val children: Seq[Association],
+  val references: Seq[Association],
+  val fathers: Seq[String],
+  val properties: Seq[Property]
+)

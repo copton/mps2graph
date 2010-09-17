@@ -2,7 +2,20 @@ package backend
 package graphviz
 
 object Printer {
-  def print(nodes: List[ast.Node]): String = {
-    return "todo"
-  }
+  private def printInheritance(nodes: Seq[ast.Node]): Seq[String] =
+    for {
+      node <- nodes
+      father <- node.fathers
+    } yield node.name + " -> " + father + ";"
+
+  private def printNodes(nodes: Seq[ast.Node]): Seq[String] =
+    nodes.map(_.name + ";")
+
+def print(nodes: Seq[ast.Node]): String =
+    (
+      List("digraph structure {") ++ 
+      printNodes(nodes) ++
+      printInheritance(nodes) ++
+      List("}", "")
+    ).mkString("\n")
 }
