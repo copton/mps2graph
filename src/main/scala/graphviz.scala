@@ -1,7 +1,7 @@
 package backend
 package graphviz
 
-object Printer {
+object Printer extends backend.Printer {
   private def printInheritance(nodes: Seq[ast.Node]): Seq[String] =
     for {
       node <- nodes
@@ -11,7 +11,7 @@ object Printer {
   private def printNodes(nodes: Seq[ast.Node]): Seq[String] =
     nodes.map(_.name + ";")
 
-def print(nodes: Seq[ast.Node]): String =
+  def print(nodes: Seq[ast.Node]): String =
     (
       List("digraph structure {") ++ 
       printNodes(nodes) ++
