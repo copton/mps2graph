@@ -6,7 +6,7 @@ object Printer extends backend.Printer {
     property.name + ": " + property.typ
 
   private def print(association: ast.Association): String =
-    association.target + " (" + association.cardinality + ")"
+    association.name + ": " + association.target + " (" + association.cardinality + ")"
 
   private def print(father: String): String = 
     father

@@ -1,7 +1,7 @@
 package ast;
 
 case class Property(val name:String, val typ: String)
-case class Association(val target:String, val cardinality: String)
+case class Association(val name:String, val target:String, val cardinality: String)
 
 object NodeType extends Enumeration {
   val Concept = Value
