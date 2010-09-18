@@ -8,11 +8,13 @@ object Control {
     val document = XML.loadFile(options.infile)
     val nodes = Parser.parse(document)
 
-    val result = options.backend match {
-      case "graphviz" => backend.graphviz.Printer.print(nodes)
-      case "text" => backend.text.Printer.print(nodes)
+    val printer = options.backend match {
+      case "graphviz" => import backend.graphviz.Printer; Printer
+      case "text" => import backend.text.Printer; Printer
       case _ => Options.usage()
     }
+
+    val result = printer.print(nodes)
     
     options.outfile match {
       case "-" => Console.print(result)
