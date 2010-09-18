@@ -18,10 +18,13 @@ object Printer extends backend.Printer {
   private def printNodes(nodes: Seq[ast.Node]): Seq[String] =
     nodes map ((n) => n.typ match {
       case ast.NodeType.InterfaceConcept => "\"%s\" [shape=ellipse];".format(n.name)
-      case ast.NodeType.Concept => "\"%s\" [shape=record, label=\"{%s%s}\"];".format(
-        n.name, n.name, 
-          if (n.properties.size == 0) "" 
-          else "|" + (n.properties map ((p) => "%s: %s".format(p.name, p.typ)) mkString "\\l"))
+      case ast.NodeType.Concept => 
+        if (n.properties.size == 0) 
+          "\"%s\" [shape=box];".format(n.name)
+        else 
+          "\"%s\" [shape=record, label=\"{%s|%s}\"];".format(
+            n.name, n.name, 
+            (n.properties map ((p) => "%s: %s".format(p.name, p.typ))) mkString "\\l")
     })
 
   def print(nodes: Seq[ast.Node]): String =
