@@ -52,10 +52,15 @@ object Parser {
     for {
       sub_node <- children(node, "node")
       if has_attr(sub_node, "role", "propertyDeclaration:0")
+    
       property <- children(sub_node, "property")
+      if has_attr(property, "name", "name:0")
       if has_attr(property, "value")
-      if has_attr(property, "resolveInfo")
-    } yield ast.Property(get_attr(property, "value"), get_attr(property, "resolveInfo"))
+
+      link <- children(sub_node, "link")
+      if has_attr(link, "role", "dataType:0")
+      if has_attr(link, "resolveInfo")
+    } yield ast.Property(get_attr(property, "value"), get_attr(link, "resolveInfo"))
 
   private def getName(node: xml.Node): String = {
     val values = for {

@@ -8,13 +8,15 @@ object Control {
     val document = XML.loadFile(options.infile)
     val nodes = Parser.parse(document)
 
+    val filtered_nodes = filter.RemoveBaseConcept(nodes)
+
     val printer = options.backend match {
       case "graphviz" => import backend.graphviz.Printer; Printer
       case "text" => import backend.text.Printer; Printer
       case _ => Options.usage()
     }
 
-    val result = printer.print(nodes)
+    val result = printer.print(filtered_nodes)
     
     options.outfile match {
       case "-" => Console.print(result)
