@@ -12,6 +12,7 @@ object Control {
 
     val printer = options.backend match {
       case "graphviz" => import backend.graphviz.Printer; Printer
+      case "graphviz_compact" => import backend.graphviz_compact.Printer; Printer
       case "text" => import backend.text.Printer; Printer
       case _ => Options.usage()
     }
