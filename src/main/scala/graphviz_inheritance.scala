@@ -1,5 +1,5 @@
 package backend
-package graphviz_compact
+package graphviz_inheritance
 
 object Printer extends backend.Printer {
   private def printInheritance(nodes: Seq[ast.Node]): Seq[String] =

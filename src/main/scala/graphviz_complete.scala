@@ -1,5 +1,5 @@
 package backend
-package graphviz
+package graphviz_complete
 
 object Printer extends backend.Printer {
   private def printInheritance(nodes: Seq[ast.Node]): Seq[String] =
@@ -18,9 +18,9 @@ object Printer extends backend.Printer {
   private def printReferences(nodes: Seq[ast.Node]): Seq[String] =
     for {
       node <- nodes
-      child <- node.references
+      reference <- node.references
     } yield "\"%s\" -> \"%s\" [arrowhead=ediamond, taillabel=\"%s\", label=\"%s\", samehead=\"%s_reference\"];".format(
-      node.name, child.target, child.cardinality, child.name, child.target)
+      node.name, reference.target, reference.cardinality, reference.name, reference.target)
 
   private def printNodes(nodes: Seq[ast.Node]): Seq[String] =
     nodes map ((n) => n.typ match {

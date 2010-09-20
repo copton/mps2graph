@@ -30,7 +30,7 @@ object Options {
   def usage(): Nothing = {
     Console.print("""valid parameters:
 -i <filename>: the input XML file according to MPS schema for language structures
--b <backend>: the backend. Possible values are: text, graphviz
+-b <backend>: the backend. Possible values are: text, graphviz_complete, graphviz_inheritance
 -o <filename|-> the output file. - means standard output.
 """)
     System.exit(1)

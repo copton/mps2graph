@@ -11,8 +11,9 @@ object Control {
     val filtered_nodes = filter.RemoveBaseConcept(nodes)
 
     val printer = options.backend match {
-      case "graphviz" => import backend.graphviz.Printer; Printer
-      case "graphviz_compact" => import backend.graphviz_compact.Printer; Printer
+      case "graphviz_complete" => import backend.graphviz_complete.Printer; Printer
+      case "graphviz_inheritance" => import backend.graphviz_inheritance.Printer; Printer
+      case "graphviz_usage" => import backend.graphviz_usage.Printer; Printer
       case "text" => import backend.text.Printer; Printer
       case _ => Options.usage()
     }
