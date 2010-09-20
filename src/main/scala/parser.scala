@@ -83,8 +83,8 @@ object Parser {
   private def getReferences(node: xml.Node): Seq[ast.Association] =
     getAssociation("reference", node)
 
-  private def getAssociation(association: String, node: xml.Node): Seq[ast.Association] =
-    for {
+  private def getAssociation(association: String, node: xml.Node): Seq[ast.Association] = {
+    val type1 = for {
       sub_node <- children(node, "node")
       if has_attr(sub_node, "role", "linkDeclaration:0")
       if children(sub_node, "property") exists ((n) => 
@@ -104,6 +104,29 @@ object Parser {
       if has_attr(target, "resolveInfo")
       
     } yield ast.Association(get_attr(name, "value"), get_attr(target, "resolveInfo"), get_attr(cardin, "value"))
+
+    val type2 = for {
+      sub_node <- children(node, "node")
+      if has_attr(sub_node, "role", "linkDeclaration:0")
+      if children(sub_node, "property") exists ((n) => 
+        has_attr(n, "name", "metaClass:0") &&
+        has_attr(n, "value", association))
+
+      name <- children(sub_node, "property")
+      if has_attr(name, "name", "role:0")
+      if has_attr(name, "value")
+
+      if ! (children(sub_node, "property") exists ((n) =>
+        has_attr(n, "name", "sourceCardinality:0")))
+
+      target <- children(sub_node, "link")
+      if has_attr(target, "role", "target:0")
+      if has_attr(target, "resolveInfo")
+      
+    } yield ast.Association(get_attr(name, "value"), get_attr(target, "resolveInfo"), "0..1")
+
+    type1 ++ type2
+  }
 
   private def getType(node: xml.Node): ast.NodeType.Value = 
     node.attribute("type").get(0).text match {
