@@ -14,6 +14,7 @@ object Control {
       case "graphviz_complete" => import backend.graphviz_complete.Printer; Printer
       case "graphviz_inheritance" => import backend.graphviz_inheritance.Printer; Printer
       case "graphviz_usage" => import backend.graphviz_usage.Printer; Printer
+      case "graphviz_clustered" => import backend.graphviz_clustered.Printer; Printer
       case "text" => import backend.text.Printer; Printer
       case _ => Options.usage()
     }

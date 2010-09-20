@@ -18,6 +18,7 @@ Graphical visualization of [MPS](http://www.jetbrains.com/mps/) languages
  * graphviz_complete: the complete grammar
  * graphviz_inheritance: graph only with inheritance relations
  * graphviz_usage: graph only with usage relations
+ * graphviz_clustered: inheritance and usage cluster with interconnections
  * text: a textual listing of the language
  
 ## Status
