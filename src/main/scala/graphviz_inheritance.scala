@@ -45,7 +45,7 @@ object Printer extends backend.Printer {
   
   def print(nodes: Seq[ast.Node]): String =
     (
-      List("digraph structure {") ++ 
+      List("digraph structure {", "concentrate=true;") ++ 
       printNodes(nodes) ++
       printInheritance(nodes) ++
       List("}", "")

@@ -7,30 +7,48 @@ object Printer extends backend.Printer {
 
   private def printChildren(node: ast.Node): Seq[String] =
     node.children map ((child) =>
-      "\"%s\" -> \"%s\" [arrowhead=diamond, taillabel=\"%s\", label=\"%s\", samehead=\"%s_child\"];".format(
-        node.name, child.target, child.cardinality, child.name, child.target
+      "\"%s\":\"%s\" -> \"%s\" [arrowhead=diamond, samehead=\"%s_child\"];".format(
+        node.name, child.name, child.target, child.target
       )
     )
 
   private def printReferences(node: ast.Node): Seq[String] =
     node.references map ((reference) =>
-      "\"%s\" -> \"%s\" [arrowhead=ediamond, taillabel=\"%s\", label=\"%s\", samehead=\"%s_reference\"];".format(
-        node.name, reference.target, reference.cardinality, reference.name, reference.target
+      "\"%s\":\"%s\" -> \"%s\" [arrowhead=ediamond, samehead=\"%s_reference\"];".format(
+        node.name, reference.name, reference.target, reference.target
       )
     )
 
+  def printChildMembers(children: Seq[ast.Association]): Seq[String] =
+    children map ((c) =>
+      "<%s>%s: %s (%s)".format(c.name, c.name, c.target, c.cardinality))
+
+  def printReferenceMembers(references: Seq[ast.Association]): Seq[String] =
+    references map ((r) =>
+      "<%s>%s: %s (%s)".format(r.name, r.name, r.target, r.cardinality))
+
   def printNode(node: ast.Node): String = (
-    List("\"%s\" [shape=rectangle];".format(node.name)) ++
-    printChildren(node) ++
-    printReferences(node)
+      List("\"%s\" [shape=%s,label=\"%s|%s\"];".format(
+        node.name,
+        node.typ match {
+          case ast.NodeType.Concept => "record"
+          case ast.NodeType.InterfaceConcept => "Mrecord"
+        },
+        node.name,
+        (
+          printChildMembers(node.children) ++ 
+          printReferenceMembers(node.references) 
+        ) mkString "|"
+      )) ++
+      printChildren(node) ++
+      printReferences(node)
     ).mkString("\n")
 
   def print(nodes: Seq[ast.Node]): String = {
-    var interestingNodes = HashSet[String]()
-    for { 
+    val interestingNodes = new HashSet[String]() ++ (for { 
       node <- nodes
       association <- node.children ++ node.references
-    } interestingNodes.add(association.target)
+    } yield association.target)
 
     val lines = for {
       node <- nodes
@@ -38,7 +56,11 @@ object Printer extends backend.Printer {
     } yield printNode(node) 
 
     (
-      List("digraph structure {") ++ 
+      List(
+        "digraph structure {", 
+        "concentrate=true;",
+        "rankdir=LR;"
+      ) ++ 
       lines ++
       List("}", "")
     ).mkString("\n")
