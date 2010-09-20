@@ -45,7 +45,7 @@ object Printer extends backend.Printer {
       node.name, node.typ match {
         case ast.NodeType.Concept => "record"
         case ast.NodeType.InterfaceConcept => "Mrecord"
-      }, node.name, fathers mkString "\\l", members mkString "\\l"
+      }, node.name, fathers mkString "\\n", members mkString "\\n"
     ) 
   }
 
