@@ -23,27 +23,27 @@ object Parser {
   def parse(document: xml.Node): Seq[ast.Node] = 
     children(document, "node") map parseNode
 
-  private def getImplements(node: xml.Node): Seq[String] =
+  private def getImplements(node: xml.Node): Seq[ast.Target] =
     for {
       sub_node <- children(node, "node")
       if has_attr(sub_node, "role", "implements:0")
       link <- children(sub_node, "link")
-      if has_attr(link, "resolveInfo")
-    } yield get_attr(link, "resolveInfo")
+      if has_attr(link, "targetNodeId")
+    } yield new ast.UnresolvedTarget(get_attr(link, "targetNodeId"))
 
-  private def getExtends(node: xml.Node): Seq[String] = { 
+  private def getExtends(node: xml.Node): Seq[ast.Target] = { 
     val type1 = for {
       sub_node <- children(node, "node")
       if has_attr(sub_node, "role", "extends:0")
       link <- children(sub_node, "link")
-      if has_attr(link, "resolveInfo")
-    } yield get_attr(link, "resolveInfo")
+      if has_attr(link, "targetNodeId")
+    } yield new ast.UnresolvedTarget(get_attr(link, "targetNodeId"))
       
     val type2 = for {
       link <- children(node, "link")
       if has_attr(link, "role", "extends:0")
-      if has_attr(link, "resolveInfo")
-    } yield get_attr(link, "resolveInfo")
+      if has_attr(link, "targetNodeId")
+    } yield new ast.UnresolvedTarget(get_attr(link, "targetNodeId"))
 
     type1 ++ type2
   }
@@ -101,9 +101,9 @@ object Parser {
 
       target <- children(sub_node, "link")
       if has_attr(target, "role", "target:0")
-      if has_attr(target, "resolveInfo")
+      if has_attr(target, "targetNodeId")
       
-    } yield ast.Association(get_attr(name, "value"), get_attr(target, "resolveInfo"), get_attr(cardin, "value"))
+    } yield ast.Association(get_attr(name, "value"), new ast.UnresolvedTarget(get_attr(target, "targetNodeId")), get_attr(cardin, "value"))
 
     val type2 = for {
       sub_node <- children(node, "node")
@@ -121,9 +121,9 @@ object Parser {
 
       target <- children(sub_node, "link")
       if has_attr(target, "role", "target:0")
-      if has_attr(target, "resolveInfo")
+      if has_attr(target, "targetNodeId")
       
-    } yield ast.Association(get_attr(name, "value"), get_attr(target, "resolveInfo"), "0..1")
+    } yield ast.Association(get_attr(name, "value"), new ast.UnresolvedTarget(get_attr(target, "targetNodeId")), "0..1")
 
     type1 ++ type2
   }
@@ -136,10 +136,14 @@ object Parser {
         ast.NodeType.InterfaceConcept
     }
 
+  private def getId(node: xml.Node): String =
+    node.attribute("id").get(0).text
+
   private def parseNode(node: xml.Node): ast.Node =
     ast.Node(
       typ = getType(node),
       name = getName(node),
+      id = getId(node),
       children = getChildren(node),
       references = getReferences(node),
       fathers = getImplements(node) ++ getExtends(node),

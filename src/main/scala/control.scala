@@ -6,9 +6,7 @@ object Control {
     val options = Options(args)
 
     val document = XML.loadFile(options.infile)
-    val nodes = Parser.parse(document)
-
-    val filtered_nodes = filter.RemoveBaseConcept(nodes)
+    val nodes = filter.UnresolvedTargets(resolver.Resolve(Parser.parse(document)))
 
     val printer = options.backend match {
       case "graphviz_complete" => import backend.graphviz_complete.Printer; Printer
@@ -18,7 +16,7 @@ object Control {
       case _ => Options.usage()
     }
 
-    val result = printer.print(filtered_nodes)
+    val result = printer.print(nodes)
     
     options.outfile match {
       case "-" => Console.print(result)

@@ -6,16 +6,16 @@ object Printer extends backend.Printer {
     property.name + ": " + property.typ
 
   private def print(association: ast.Association): String =
-    association.name + ": " + association.target + " (" + association.cardinality + ")"
-
-  private def print(father: String): String = 
-    father
+    association.name + ": " + print(association.target) + " (" + association.cardinality + ")"
 
   private def print(typ: ast.NodeType.Value): String =
     typ match {
       case ast.NodeType.Concept => "Concept"
       case ast.NodeType.InterfaceConcept => "InterfaceConcept"
     }
+
+  private def print(target: ast.Target): String =
+    target.getName + "(" + target.getId + ")"
 
   private def printNode(node: ast.Node): String = List(
       node.name,

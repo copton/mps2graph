@@ -6,16 +6,16 @@ object Printer extends backend.Printer {
     for {
       node <- nodes
       father <- node.fathers
-    } yield "\"%s\" -> \"%s\" [arrowhead=empty,samehead=\"%s_father\"];".format(node.name, father, father)
+    } yield "\"%s\" -> \"%s\" [arrowhead=empty,samehead=\"%s_father\"];".format(node.name, father.getName, father.getName)
 
   private def printProperties(node: ast.Node): Seq[String] =
     node.properties map ((p) => "%s: %s".format(p.name, p.typ))
 
   private def printReferences(node: ast.Node): Seq[String] =
-    node.references.map ((r) => "%s: *%s (%s)".format(r.name, r.target, r.cardinality))
+    node.references.map ((r) => "%s: *%s (%s)".format(r.name, r.target.getName, r.cardinality))
 
   private def printChildren(node: ast.Node): Seq[String] =
-    node.children.map ((r) => "%s: %s (%s)".format(r.name, r.target, r.cardinality))
+    node.children.map ((r) => "%s: %s (%s)".format(r.name, r.target.getName, r.cardinality))
 
   private def printNode(node: ast.Node): String = {
     val members = (

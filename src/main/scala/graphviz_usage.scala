@@ -8,24 +8,24 @@ object Printer extends backend.Printer {
   private def printChildren(node: ast.Node): Seq[String] =
     node.children map ((child) =>
       "\"%s\":\"%s\" -> \"%s\" [arrowhead=diamond, samehead=\"%s_child\"];".format(
-        node.name, child.name, child.target, child.target
+        node.name, child.name, child.target.getName, child.target.getName
       )
     )
 
   private def printReferences(node: ast.Node): Seq[String] =
     node.references map ((reference) =>
       "\"%s\":\"%s\" -> \"%s\" [arrowhead=ediamond, samehead=\"%s_reference\"];".format(
-        node.name, reference.name, reference.target, reference.target
+        node.name, reference.name, reference.target.getName, reference.target.getName
       )
     )
 
   def printChildMembers(children: Seq[ast.Association]): Seq[String] =
     children map ((c) =>
-      "<%s>%s: %s (%s)".format(c.name, c.name, c.target, c.cardinality))
+      "<%s>%s: %s (%s)".format(c.name, c.name, c.target.getName, c.cardinality))
 
   def printReferenceMembers(references: Seq[ast.Association]): Seq[String] =
     references map ((r) =>
-      "<%s>%s: %s (%s)".format(r.name, r.name, r.target, r.cardinality))
+      "<%s>%s: %s (%s)".format(r.name, r.name, r.target.getName, r.cardinality))
 
   def printNode(node: ast.Node): String = (
       List("\"%s\" [shape=%s,label=\"%s|%s\"];".format(
@@ -48,7 +48,7 @@ object Printer extends backend.Printer {
     val interestingNodes = new HashSet[String]() ++ (for { 
       node <- nodes
       association <- node.children ++ node.references
-    } yield association.target)
+    } yield association.target.getName)
 
     val lines = for {
       node <- nodes

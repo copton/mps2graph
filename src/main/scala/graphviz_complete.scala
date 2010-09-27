@@ -6,32 +6,32 @@ object Printer extends backend.Printer {
     for {
       node <- nodes
       father <- node.fathers
-    } yield "\"%s\" -> \"%s\" [arrowhead=none, arrowtail=dot, color=blue, samehead=\"%s_father\"];".format(node.name, father, father)
+    } yield "\"%s\" -> \"%s\" [arrowhead=none, arrowtail=dot, color=blue, samehead=\"%s_father\"];".format(node.name, father.getName, father.getName)
 
   private def printChildren(nodes: Seq[ast.Node]): Seq[String] =
     for {
       node <- nodes
       child <- node.children
     } yield "\"%s\" -> \"%s\" [arrowhead=none, arrowtail=dot, color=green, samehead=\"%s_child\"];".format(
-      node.name, child.target, child.cardinality, child.name, child.target)
+      node.name, child.target.getName, child.cardinality, child.name, child.target.getName)
 
   private def printReferences(nodes: Seq[ast.Node]): Seq[String] =
     for {
       node <- nodes
       reference <- node.references
     } yield "\"%s\" -> \"%s\" [arrowhead=none, arrowtail=dot, color=green, samehead=\"%s_reference\"];".format(
-      node.name, reference.target, reference.cardinality, reference.name, reference.target)
+      node.name, reference.target.getName, reference.cardinality, reference.name, reference.target.getName)
 
   private def printMemberProperties(node: ast.Node): Seq[String] =
     node.properties map ((p) => "%s: %s".format(p.name, p.typ))
 
   private def printMemberReferences(node: ast.Node): Seq[String] =
-    node.references.map ((r) => "%s: *%s (%s)".format(r.name, r.target, r.cardinality))
+    node.references.map ((r) => "%s: *%s (%s)".format(r.name, r.target.getName, r.cardinality))
 
   private def printMemberChildren(node: ast.Node): Seq[String] =
-    node.children.map ((r) => "%s: %s (%s)".format(r.name, r.target, r.cardinality))
+    node.children.map ((r) => "%s: %s (%s)".format(r.name, r.target.getName, r.cardinality))
 
-  private def printMemberFathers(node: ast.Node): Seq[String] = node.fathers
+  private def printMemberFathers(node: ast.Node): Seq[String] = node.fathers map (_.getName)
 
   private def printNode(node: ast.Node): String = {
     val members = (
